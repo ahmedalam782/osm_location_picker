@@ -1,33 +1,41 @@
-import 'package:flutter/foundation.dart'
-    show kIsWeb, defaultTargetPlatform, TargetPlatform;
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../view_model/cubit/base_state.dart';
-import '../../view_model/cubit/location_picker_cubit.dart';
-import '../../view_model/cubit/location_picker_states.dart';
+import '../../../domain/place_search.dart';
+import '../../view_model/location_picker_notifier.dart';
+import '../../view_model/location_picker_state.dart';
 import '../../../models/location_model.dart';
+import '../../location_picker_config.dart';
 import '../../location_picker_theme.dart';
 import '../../location_picker_strings.dart';
 import 'location_picker_error_widget.dart';
+import 'map_action_controls.dart';
 import 'map_address_header.dart';
 import 'map_center_marker.dart';
-import 'my_location_button.dart';
 import 'map_confirm_button.dart';
-import 'location_search_bottom_sheet.dart';
-import 'location_search_dialog.dart';
 
 class LocationPickerBody extends StatefulWidget {
+  final LocationPickerNotifier notifier;
   final LocationPickerTheme theme;
   final LocationPickerStrings strings;
+  final LocationPickerConfig config;
+  final PlaceSearch placeSearch;
+
+  /// Called when the user confirms, instead of closing a route.
+  ///
+  /// The full-screen page leaves this null and pops the route.
+  final ValueChanged<LocationModel>? onConfirmed;
 
   const LocationPickerBody({
     super.key,
+    required this.notifier,
     required this.theme,
     required this.strings,
+    required this.config,
+    required this.placeSearch,
+    this.onConfirmed,
   });
 
   @override
@@ -38,16 +46,37 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
     with TickerProviderStateMixin {
   late final MapController _mapController;
 
+  LocationPickerNotifier get _notifier => widget.notifier;
+  LocationPickerState? _listenedState;
+
   @override
   void initState() {
     super.initState();
     _mapController = MapController();
+    _notifier.addListener(_onPickerStateChanged);
   }
 
   @override
   void dispose() {
+    _notifier.removeListener(_onPickerStateChanged);
     _mapController.dispose();
     super.dispose();
+  }
+
+  void _onPickerStateChanged() {
+    final state = _notifier.value;
+    final previous = _listenedState;
+    _listenedState = state;
+    final shouldListen =
+        previous == null ||
+        previous.addressData.state != state.addressData.state ||
+        previous.position != state.position ||
+        previous.shouldMoveToPosition != state.shouldMoveToPosition;
+    if (!shouldListen) return;
+    if (state.shouldMoveToPosition && state.position != null) {
+          _animatedMapMove(state.position!, widget.config.initialZoom);
+      _notifier.updateShouldMoveToPosition(false);
+    }
   }
 
   void _animatedMapMove(LatLng destLocation, double destZoom) {
@@ -91,40 +120,38 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
     }
   }
 
+  void _zoomIn() {
+    try {
+      final camera = _mapController.camera;
+      final newZoom = (camera.zoom + 1).clamp(1.0, widget.config.maxZoom);
+      _animatedMapMove(camera.center, newZoom);
+    } catch (_) {}
+  }
+
+  void _zoomOut() {
+    try {
+      final camera = _mapController.camera;
+      final newZoom = (camera.zoom - 1).clamp(1.0, widget.config.maxZoom);
+      _animatedMapMove(camera.center, newZoom);
+    } catch (_) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final initialState = _notifier.value;
+    final initialMapCenter =
+        initialState.position ??
+        initialState.currentCenter ??
+        widget.config.fallbackCenter;
 
-    return BlocConsumer<LocationPickerCubit, LocationPickerStates>(
-      buildWhen:
-          (prev, curr) =>
-              prev.addressData.state != curr.addressData.state ||
-              prev.addressData.data != curr.addressData.data ||
-              prev.addressData.exception != curr.addressData.exception ||
-              prev.position != curr.position ||
-              prev.isMoving != curr.isMoving,
-      listenWhen:
-          (prev, curr) =>
-              prev.addressData.state != curr.addressData.state ||
-              prev.position != curr.position ||
-              prev.shouldMoveToPosition != curr.shouldMoveToPosition,
-      listener: (context, state) async {
-        final cubit = context.read<LocationPickerCubit>();
-
-        if (state.shouldMoveToPosition && state.position != null) {
-          _animatedMapMove(state.position!, 16.0);
-          cubit.updateShouldMoveToPosition(false);
-        }
-      },
-      builder: (context, state) {
-        final cubit = context.read<LocationPickerCubit>();
+    return ValueListenableBuilder<LocationPickerState>(
+      valueListenable: _notifier,
+      builder: (context, state, map) {
         final hasPosition = state.position != null;
-
-        // The map is always rendered as the base layer, centering on the current resolved position or current center fallback.
-        final initialMapCenter =
-            state.position ??
-            state.currentCenter ??
-            const LatLng(33.3152, 44.3661);
+        final addressLoading =
+            state.addressData.state == StatusState.loading ||
+            state.addressData.state == StatusState.initial;
 
         final addressText =
             (state.addressData.state == StatusState.loading ||
@@ -140,130 +167,38 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
 
         return Stack(
           children: [
-            // Map (Always visible as the base layer)
-            ColorFiltered(
-              colorFilter:
-                  isDark
-                      ? const ColorFilter.matrix([
-                        -0.2126,
-                        -0.7152,
-                        -0.0722,
-                        0,
-                        255,
-                        -0.2126,
-                        -0.7152,
-                        -0.0722,
-                        0,
-                        255,
-                        -0.2126,
-                        -0.7152,
-                        -0.0722,
-                        0,
-                        255,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                      ])
-                      : const ColorFilter.matrix([
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        0,
-                        0,
-                        0,
-                        1,
-                        0,
-                      ]),
-              child: FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: initialMapCenter,
-                  initialZoom: 16.0,
-                  maxZoom: 18.0,
-                  onMapEvent: (event) {
-                    if (event.source == MapEventSource.mapController) return;
-                    if (event is MapEventMove) {
-                      cubit.onCameraMove(event.camera.center);
-                    } else if (event is MapEventMoveEnd) {
-                      cubit.onCameraIdle();
-                    }
-                  },
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-                    userAgentPackageName: 'com.location_picker.app',
-                    subdomains: const ['a', 'b', 'c', 'd'],
-                  ),
-                ],
+            map!,
+
+            // Floating Map Controls (Zoom +, Zoom -, My Location)
+            Positioned(
+              right: 16,
+              bottom: hasPosition ? 120 : 32,
+              child: MapActionControls(
+                theme: widget.theme,
+                onZoomIn: _zoomIn,
+                onZoomOut: _zoomOut,
+                onMyLocation: () => _notifier.getCurrentLocation(),
+                isLocating: !hasPosition && addressLoading,
               ),
             ),
 
-            // My Location Button
-            if (hasPosition)
-              MyLocationButton(
-                theme: widget.theme,
-                onTap: () => cubit.getCurrentLocation(),
-              ),
-
             // Center Pin Marker (Only active when position is available)
             if (hasPosition)
-              MapCenterMarker(isMoving: state.isMoving, theme: widget.theme),
+              MapCenterMarker(
+                isMoving: state.isMoving,
+                isLoading: false,
+                theme: widget.theme,
+              ),
 
             // Address Header (Always visible)
             MapAddressHeader(
               addressText: addressText,
               theme: widget.theme,
-              onTap: () {
-                final isMobile =
-                    !kIsWeb &&
-                    (defaultTargetPlatform == TargetPlatform.android ||
-                        defaultTargetPlatform == TargetPlatform.iOS);
-                if (isMobile) {
-                  showModalBottomSheet(
-                    context: context,
-                    isScrollControlled: true,
-                    backgroundColor: Colors.transparent,
-                    builder:
-                        (ctx) => LocationSearchBottomSheet(
-                          theme: widget.theme,
-                          strings: widget.strings,
-                          onLocationSelected: (latLng, address) {
-                            cubit.selectLocation(latLng, address);
-                            Navigator.pop(ctx);
-                          },
-                        ),
-                  );
-                } else {
-                  showDialog(
-                    context: context,
-                    builder:
-                        (ctx) => LocationSearchDialog(
-                          theme: widget.theme,
-                          strings: widget.strings,
-                          onLocationSelected: (latLng, address) {
-                            cubit.selectLocation(latLng, address);
-                            Navigator.pop(ctx);
-                          },
-                        ),
-                  );
-                }
-              },
+              strings: widget.strings,
+              placeSearch: widget.placeSearch,
+              near: state.currentCenter ?? state.position,
+              isLoading: addressLoading,
+              onLocationSelected: _notifier.selectLocation,
             ),
 
             // Confirm Button (Only active when position is available)
@@ -271,14 +206,14 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
               MapConfirmButton(
                 theme: widget.theme,
                 title: widget.strings.confirmLocation,
+                coordinates: state.currentCenter ?? state.position,
+                isLoading: state.addressData.state == StatusState.loading ||
+                    state.isMoving,
                 onTap: () {
-                  final currentState =
-                      context.read<LocationPickerCubit>().state;
-                  if (currentState.addressData.state == StatusState.loading ||
-                      currentState.isMoving) {
-                    return;
-                  }
-                  if (currentState.currentCenter != null) {
+                  final currentState = _notifier.value;
+                  if (currentState.isMoving) return;
+                  final center = currentState.currentCenter ?? currentState.position;
+                  if (center != null) {
                     final resolvedAddress =
                         (currentState.addressData.data != null &&
                                 currentState.addressData.data!
@@ -286,12 +221,16 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
                                     .isNotEmpty)
                             ? currentState.addressData.data!
                             : widget.strings.currentLocation;
-                    Navigator.of(context).pop(
-                      LocationModel(
-                        latLng: currentState.currentCenter,
-                        address: resolvedAddress,
-                      ),
+                    final selected = LocationModel(
+                      latLng: center,
+                      address: resolvedAddress,
                     );
+                    final onConfirmed = widget.onConfirmed;
+                    if (onConfirmed != null) {
+                      onConfirmed(selected);
+                    } else {
+                      Navigator.of(context).pop(selected);
+                    }
                   }
                 },
               ),
@@ -307,45 +246,108 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
                   child: LocationPickerErrorWidget(
                     theme: widget.theme,
                     message: state.addressData.exception,
-                    onDismiss: () => cubit.dismissError(),
+                    onDismiss: () => _notifier.dismissError(),
                     onRetry: () {
                       if (hasPosition) {
-                        cubit.getAddressFromLatLng(
+                        _notifier.getAddressFromLatLng(
                           state.currentCenter ?? state.position!,
                         );
                       } else {
-                        cubit.getCurrentLocation(position: state.currentCenter);
+                        _notifier.getCurrentLocation(
+                          position: state.currentCenter,
+                        );
                       }
                     },
                   ),
                 ),
               ),
 
-            // Centered circular loading indicator as a non-blocking overlay on top of the map (only shown on initial load before coordinates are ready)
-            if ((state.addressData.state == StatusState.loading ||
-                    state.addressData.state == StatusState.initial) &&
-                !hasPosition)
+            if (addressLoading &&
+                !hasPosition &&
+                widget.theme.loadingLottieAsset != null)
               Center(
-                child:
-                    widget.theme.loadingLottieAsset != null
-                        ? Lottie.asset(
-                          widget.theme.loadingLottieAsset!,
-                          width: 80,
-                          height: 80,
-                          fit: BoxFit.contain,
-                        )
-                        : SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(
-                            color: widget.theme.primaryColor,
-                            strokeWidth: 3.5,
-                          ),
-                        ),
+                child: Lottie.asset(
+                  widget.theme.loadingLottieAsset!,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.contain,
+                ),
               ),
           ],
         );
       },
+      child: ColorFiltered(
+        colorFilter:
+            (widget.config.useDarkTiles ?? isDark)
+                ? const ColorFilter.matrix([
+                  -0.2126,
+                  -0.7152,
+                  -0.0722,
+                  0,
+                  255,
+                  -0.2126,
+                  -0.7152,
+                  -0.0722,
+                  0,
+                  255,
+                  -0.2126,
+                  -0.7152,
+                  -0.0722,
+                  0,
+                  255,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                ])
+                : const ColorFilter.matrix([
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                ]),
+        child: FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+            initialCenter: initialMapCenter,
+            initialZoom: widget.config.initialZoom,
+            maxZoom: widget.config.maxZoom,
+            onMapEvent: (event) {
+              if (event.source == MapEventSource.mapController) return;
+              if (event is MapEventMove) {
+                _notifier.onCameraMove(event.camera.center);
+              } else if (event is MapEventMoveEnd) {
+                _notifier.onCameraIdle();
+              }
+            },
+          ),
+          children: [
+            TileLayer(
+              urlTemplate: widget.config.tileUrlTemplate,
+              userAgentPackageName: widget.config.userAgentPackageName,
+              subdomains: widget.config.tileSubdomains,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
+

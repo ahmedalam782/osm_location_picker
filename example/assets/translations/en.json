@@ -1,0 +1,25 @@
+{
+  "language_name": "English",
+  "demo": {
+    "title": "Location Picker Demo",
+    "open": "Open Location Picker",
+    "no_location": "No Location Selected",
+    "address": "Address:",
+    "coordinates": "Coordinates:",
+    "no_address": "No address returned"
+  },
+  "location_picker": {
+    "title": "Select Location",
+    "fetching_location": "Fetching location...",
+    "location_fetch_failed": "Failed to fetch location",
+    "unknown_location": "Unknown location",
+    "confirm_location": "Confirm Location",
+    "current_location": "Current Location",
+    "no_internet": "No internet connection, please try again!",
+    "service_disabled": "Location services are disabled",
+    "permission_denied": "Location permission denied",
+    "permission_permanently_denied": "Location permission permanently denied",
+    "search_hint": "Search for a location...",
+    "no_results": "No results found"
+  }
+}

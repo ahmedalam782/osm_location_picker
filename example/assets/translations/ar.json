@@ -1,0 +1,25 @@
+{
+  "language_name": "العربية",
+  "demo": {
+    "title": "تجربة اختيار الموقع",
+    "open": "فتح اختيار الموقع",
+    "no_location": "لم يتم اختيار موقع",
+    "address": "العنوان:",
+    "coordinates": "الإحداثيات:",
+    "no_address": "لم يتم إرجاع عنوان"
+  },
+  "location_picker": {
+    "title": "تحديد الموقع",
+    "fetching_location": "جاري جلب الموقع...",
+    "location_fetch_failed": "فشل جلب الموقع",
+    "unknown_location": "موقع غير معروف",
+    "confirm_location": "تأكيد الموقع",
+    "current_location": "الموقع الحالي",
+    "no_internet": "لا يوجد اتصال بالإنترنت، يرجى المحاولة مرة أخرى!",
+    "service_disabled": "خدمات الموقع معطلة",
+    "permission_denied": "تم رفض إذن الوصول للموقع",
+    "permission_permanently_denied": "تم رفض إذن الوصول للموقع بشكل دائم",
+    "search_hint": "ابحث عن موقع...",
+    "no_results": "لا توجد نتائج"
+  }
+}

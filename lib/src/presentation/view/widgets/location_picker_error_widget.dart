@@ -32,90 +32,96 @@ class LocationPickerErrorWidget extends StatelessWidget {
     final content = Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Animated concentric rings and glow background
-            _AnimatedErrorBackground(
-              theme: theme,
-              child: errorLottie != null
-                  ? Lottie.asset(
-                      errorLottie,
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.contain,
-                    )
-                  : Icon(
-                      isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
-                      size: 64,
-                      color: theme.primaryColor,
-                    ),
-            ),
-            const SizedBox(height: 24),
-
-            // Error Title
-            Text(
-              isOffline
-                  ? (Localizations.localeOf(context).languageCode == 'ar'
-                      ? 'لا يوجد اتصال بالإنترنت'
-                      : 'No Internet Connection')
-                  : (Localizations.localeOf(context).languageCode == 'ar'
-                      ? 'حدث خطأ ما'
-                      : 'Something went wrong'),
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme.of(context).brightness == Brightness.light
-                    ? const Color(0xff0A100B)
-                    : Colors.white.withValues(alpha: 0.9),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 460),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Animated concentric rings and glow background
+              _AnimatedErrorBackground(
+                theme: theme,
+                child: errorLottie != null
+                    ? Lottie.asset(
+                        errorLottie,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.contain,
+                      )
+                    : Icon(
+                        isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
+                        size: 64,
+                        color: theme.primaryColor,
+                      ),
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-
-            // Error Message
-            Text(
-              errorMessage.replaceFirst('Exception: ', '').replaceFirst('Exception', ''),
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-                color: Color(0xff6B7C6E),
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            // Retry button for non-mobile platforms (web & desktop)
-            if ((onRetry != null || onDismiss != null) &&
-                (kIsWeb ||
-                    (defaultTargetPlatform != TargetPlatform.android &&
-                        defaultTargetPlatform != TargetPlatform.iOS))) ...[
               const SizedBox(height: 24),
-              ElevatedButton.icon(
-                onPressed: onRetry ?? onDismiss,
-                icon: const Icon(Icons.refresh_rounded),
-                label: Text(
-                  Localizations.localeOf(context).languageCode == 'ar'
-                      ? 'إعادة المحاولة'
-                      : 'Try Again',
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.primaryColor,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                ),
-              ),
-            ],
 
-          ],
+              // Error Title
+              Text(
+                isOffline
+                    ? (Localizations.localeOf(context).languageCode == 'ar'
+                        ? 'لا يوجد اتصال بالإنترنت'
+                        : 'No Internet Connection')
+                    : (Localizations.localeOf(context).languageCode == 'ar'
+                        ? 'حدث خطأ ما'
+                        : 'Something went wrong'),
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? const Color(0xff0A100B)
+                      : Colors.white.withValues(alpha: 0.9),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 8),
+
+              // Error Message
+              Text(
+                errorMessage.replaceFirst('Exception: ', '').replaceFirst('Exception', ''),
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff6B7C6E),
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              // Retry button for non-mobile platforms (web & desktop)
+              if ((onRetry != null || onDismiss != null) &&
+                  (kIsWeb ||
+                      (defaultTargetPlatform != TargetPlatform.android &&
+                          defaultTargetPlatform != TargetPlatform.iOS))) ...[
+                const SizedBox(height: 24),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: ElevatedButton.icon(
+                    onPressed: onRetry ?? onDismiss,
+                    icon: const Icon(Icons.refresh_rounded),
+                    label: Text(
+                      Localizations.localeOf(context).languageCode == 'ar'
+                          ? 'إعادة المحاولة'
+                          : 'Try Again',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.primaryColor,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    ),
+                  ),
+                ),
+              ],
+
+            ],
+          ),
         ),
       ),
     );

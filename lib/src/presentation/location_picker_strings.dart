@@ -1,12 +1,18 @@
-import 'package:flutter/material.dart';
-
-/// Localised UI strings used by [LocationPickerView].
+/// UI strings used by [LocationPickerView].
 ///
-/// Use [LocationPickerStrings.en] or [LocationPickerStrings.ar] for built-in
-/// translations, or supply your own by constructing this class directly.
+/// English is the default. Pass strings from the host app when you want
+/// another language, including values already translated with `.tr()`:
 ///
-/// [LocationPickerStrings.of] automatically selects the correct locale based
-/// on the ambient [BuildContext].
+/// ```dart
+/// LocationPickerView(
+///   strings: LocationPickerStrings(
+///     title: 'location_picker.title'.tr(),
+///     confirmLocation: 'location_picker.confirm_location'.tr(),
+///   ),
+/// )
+/// ```
+///
+/// Omitted fields stay in English.
 class LocationPickerStrings {
   /// Title displayed in the app bar.
   final String title;
@@ -44,61 +50,19 @@ class LocationPickerStrings {
   /// Shown when an address search returns no results.
   final String noResults;
 
-  /// Creates a [LocationPickerStrings] with all fields required.
+  /// Creates UI strings. Every field defaults to English.
   const LocationPickerStrings({
-    required this.title,
-    required this.fetchingLocation,
-    required this.locationFetchFailed,
-    required this.unknownLocation,
-    required this.confirmLocation,
-    required this.currentLocation,
-    required this.noInternet,
-    required this.serviceDisabled,
-    required this.permissionDenied,
-    required this.permissionPermanentlyDenied,
-    required this.searchHint,
-    required this.noResults,
+    this.title = 'Select Location',
+    this.fetchingLocation = 'Fetching location...',
+    this.locationFetchFailed = 'Failed to fetch location',
+    this.unknownLocation = 'Unknown location',
+    this.confirmLocation = 'Confirm Location',
+    this.currentLocation = 'Current Location',
+    this.noInternet = 'No internet connection, please try again!',
+    this.serviceDisabled = 'Location services are disabled',
+    this.permissionDenied = 'Location permission denied',
+    this.permissionPermanentlyDenied = 'Location permission permanently denied',
+    this.searchHint = 'Search for a location...',
+    this.noResults = 'No results found',
   });
-
-  /// Returns Arabic (العربية) UI strings.
-  factory LocationPickerStrings.ar() => const LocationPickerStrings(
-    title: 'تحديد الموقع',
-    fetchingLocation: 'جاري جلب الموقع...',
-    locationFetchFailed: 'فشل جلب الموقع',
-    unknownLocation: 'موقع غير معروف',
-    confirmLocation: 'تأكيد الموقع',
-    currentLocation: 'الموقع الحالي',
-    noInternet: 'لا يوجد اتصال بالإنترنت، يرجى المحاولة مرة أخرى!',
-    serviceDisabled: 'خدمات الموقع معطلة',
-    permissionDenied: 'تم رفض إذن الوصول للموقع',
-    permissionPermanentlyDenied: 'تم رفض إذن الوصول للموقع بشكل دائم',
-    searchHint: 'ابحث عن موقع...',
-    noResults: 'لا توجد نتائج',
-  );
-
-  /// Returns English UI strings.
-  factory LocationPickerStrings.en() => const LocationPickerStrings(
-    title: 'Select Location',
-    fetchingLocation: 'Fetching location...',
-    locationFetchFailed: 'Failed to fetch location',
-    unknownLocation: 'Unknown location',
-    confirmLocation: 'Confirm Location',
-    currentLocation: 'Current Location',
-    noInternet: 'No internet connection, please try again!',
-    serviceDisabled: 'Location services are disabled',
-    permissionDenied: 'Location permission denied',
-    permissionPermanentlyDenied: 'Location permission permanently denied',
-    searchHint: 'Search for a location...',
-    noResults: 'No results found',
-  );
-
-  /// Returns the appropriate strings for the ambient locale.
-  ///
-  /// Falls back to [LocationPickerStrings.en] for any locale other than `ar`.
-  factory LocationPickerStrings.of(BuildContext context) {
-    final languageCode = Localizations.localeOf(context).languageCode;
-    return languageCode == 'ar'
-        ? LocationPickerStrings.ar()
-        : LocationPickerStrings.en();
-  }
 }

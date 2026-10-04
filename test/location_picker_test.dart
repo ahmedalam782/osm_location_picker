@@ -1,20 +1,21 @@
-import 'package:flutter_test/flutter_test.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:osm_location_picker/osm_location_picker.dart';
+import 'models/location_model_test.dart' as location_model_test;
+import 'domain/place_search_test.dart' as place_search_test;
+import 'presentation/location_picker_theme_test.dart' as location_picker_theme_test;
+import 'presentation/location_picker_config_test.dart' as location_picker_config_test;
+import 'presentation/location_picker_strings_test.dart' as location_picker_strings_test;
+import 'presentation/view/location_map_preview_test.dart' as location_map_preview_test;
+import 'presentation/view/location_picker_view_test.dart' as location_picker_view_test;
+import 'presentation/view/widgets/map_action_controls_test.dart' as map_action_controls_test;
+import 'presentation/view/widgets/map_confirm_button_test.dart' as map_confirm_button_test;
 
 void main() {
-  test('LocationModel toJson and fromJson serialization works', () {
-    const latLng = LatLng(33.3152, 44.3661);
-    const model = LocationModel(address: 'Test Address', latLng: latLng);
-
-    final json = model.toJson();
-    expect(json['address'], 'Test Address');
-    expect(json['latLng']['latitude'], 33.3152);
-    expect(json['latLng']['longitude'], 44.3661);
-
-    final parsedModel = LocationModel.fromJson(json);
-    expect(parsedModel.address, 'Test Address');
-    expect(parsedModel.latLng?.latitude, 33.3152);
-    expect(parsedModel.latLng?.longitude, 44.3661);
-  });
+  location_model_test.main();
+  place_search_test.main();
+  location_picker_theme_test.main();
+  location_picker_config_test.main();
+  location_picker_strings_test.main();
+  location_map_preview_test.main();
+  location_picker_view_test.main();
+  map_action_controls_test.main();
+  map_confirm_button_test.main();
 }

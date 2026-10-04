@@ -1,68 +1,63 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:latlong2/latlong.dart';
 
-/// A single result returned by the Nominatim geocoding API.
-class NominatimSearchResult {
-  /// Full display name of the matched location.
-  final String displayName;
+import '../domain/place_search.dart';
 
-  /// Latitude of the matched location.
-  final double lat;
-
-  /// Longitude of the matched location.
-  final double lon;
-
-  /// OSM type string (e.g. `"city"`, `"road"`).
-  final String type;
-
-  /// Creates a [NominatimSearchResult].
-  const NominatimSearchResult({
-    required this.displayName,
-    required this.lat,
-    required this.lon,
-    required this.type,
-  });
-
-  /// Deserialises a [NominatimSearchResult] from a Nominatim JSON object.
-  factory NominatimSearchResult.fromJson(Map<String, dynamic> json) {
-    return NominatimSearchResult(
-      displayName: json['display_name'] as String? ?? '',
-      lat: double.tryParse(json['lat'] as String? ?? '0') ?? 0.0,
-      lon: double.tryParse(json['lon'] as String? ?? '0') ?? 0.0,
-      type: json['type'] as String? ?? '',
-    );
-  }
-}
+export '../domain/place_search.dart';
 
 /// Thin wrapper around the [Nominatim](https://nominatim.org/) search API.
 ///
 /// Requires no API key. Please respect the
 /// [Nominatim usage policy](https://operations.osmfoundation.org/policies/nominatim/).
-class NominatimService {
+class NominatimService implements PlaceSearch {
   final Dio _dio;
+  final String acceptLanguage;
+  final String userAgent;
+  final int searchLimit;
 
   /// Creates a [NominatimService] backed by the provided [Dio] instance.
-  NominatimService(this._dio);
+  NominatimService(
+    this._dio, {
+    this.acceptLanguage = 'en',
+    this.userAgent = 'LocationPicker/1.0',
+    this.searchLimit = 5,
+  });
 
   /// Searches for locations matching [query].
   ///
   /// Returns an empty list when [query] is blank or on network failure.
   /// Results are limited to 5 entries.
-  Future<List<NominatimSearchResult>> search(String query) async {
+  @override
+  Future<List<NominatimSearchResult>> search(
+    String query, {
+    LatLng? near,
+  }) async {
     if (query.trim().isEmpty) return [];
+
+    final parameters = <String, dynamic>{
+      'q': query,
+      'format': 'json',
+      'limit': searchLimit,
+      'addressdetails': 1,
+      'dedupe': 1,
+      'accept-language': acceptLanguage,
+    };
+    if (near != null) {
+      const span = 0.6;
+      parameters['viewbox'] =
+          '${near.longitude - span},${near.latitude + span},${near.longitude + span},${near.latitude - span}';
+      parameters['bounded'] = 0;
+    }
 
     try {
       final response = await _dio.get(
         'https://nominatim.openstreetmap.org/search',
-        queryParameters: {
-          'q': query,
-          'format': 'json',
-          'limit': 5,
-          'addressdetails': 1,
-        },
+        queryParameters: parameters,
         options: Options(
           headers: {
-            'Accept-Language': 'ar,en',
-            'User-Agent': 'LocationPicker/1.0',
+            'Accept-Language': acceptLanguage,
+            if (!kIsWeb) 'User-Agent': userAgent,
           },
           receiveTimeout: const Duration(seconds: 5),
         ),
@@ -72,8 +67,11 @@ class NominatimService {
       if (list is List) {
         return list
             .map(
-              (e) => NominatimSearchResult.fromJson(e as Map<String, dynamic>),
+              (e) => NominatimSearchResult.fromJson(
+                Map<String, dynamic>.from(e as Map),
+              ),
             )
+            .where((item) => item.lat != 0 || item.lon != 0)
             .toList();
       }
       return [];
