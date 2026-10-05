@@ -84,16 +84,13 @@ class LocationPickerIcon {
        svg = true;
 
   /// An SVG document, with no asset file.
-  const LocationPickerIcon.markup(
-    String markup, {
-    this.size,
-    this.tint = true,
-  }) : assetPath = null,
-       packageName = null,
-       url = null,
-       svgMarkup = markup,
-       iconData = null,
-       svg = true;
+  const LocationPickerIcon.markup(String markup, {this.size, this.tint = true})
+    : assetPath = null,
+      packageName = null,
+      url = null,
+      svgMarkup = markup,
+      iconData = null,
+      svg = true;
 
   /// A network image. Set [svg] when the URL points at an SVG file.
   const LocationPickerIcon.network(
@@ -137,9 +134,8 @@ class LocationPickerIconView extends StatelessWidget {
   Widget build(BuildContext context) {
     final drawnSize = icon.size ?? size;
     final tint = icon.tint ? color : null;
-    final filter = tint == null
-        ? null
-        : ColorFilter.mode(tint, BlendMode.srcIn);
+    final filter =
+        tint == null ? null : ColorFilter.mode(tint, BlendMode.srcIn);
 
     final iconData = icon.iconData;
     if (iconData != null) {

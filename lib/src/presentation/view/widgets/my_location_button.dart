@@ -14,9 +14,10 @@ class MyLocationButton extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = (theme.controlsBackgroundColor ?? theme.cardColor)
         .withValues(alpha: theme.glassmorphism ? 0.85 : 1.0);
-    final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.12)
-        : theme.borderColor.withValues(alpha: 0.4);
+    final borderColor =
+        isDark
+            ? Colors.white.withValues(alpha: 0.12)
+            : theme.borderColor.withValues(alpha: 0.4);
 
     Widget button = Container(
       width: 48,

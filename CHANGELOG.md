@@ -1,3 +1,10 @@
+## 1.0.5
+
+- Fix: updated GPS device location fetching to use `LocationAccuracy.high` on native platforms for reliable hardware and simulated GPS fixes.
+- Fix: updated macOS CocoaPods minimum deployment target to `12.0` in `example/macos/Podfile` post-install hook to prevent Xcode build failures.
+- Web: verified full compatibility with Flutter WebAssembly (WASM) compilation (`flutter build web --wasm`).
+- Docs: updated README with comprehensive platform-specific permissions, WebAssembly (WASM) guides, configuration instructions for Android, iOS, macOS, Web, Windows, and Linux, and iOS Simulator location testing instructions.
+
 ## 1.0.4
 
 - Fix: added macOS App Sandbox location entitlements and usage description keys to enable GPS location picking.

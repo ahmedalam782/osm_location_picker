@@ -2,19 +2,27 @@
 
 [![pub package](https://img.shields.io/pub/v/osm_location_picker.svg?label=pub)](https://pub.dev/packages/osm_location_picker)
 [![pub points](https://img.shields.io/pub/points/osm_location_picker)](https://pub.dev/packages/osm_location_picker/score)
-[![Flutter](https://img.shields.io/badge/Flutter-3.0.0%2B-02569B?logo=flutter)](https://flutter.dev/)
+[![Flutter](https://img.shields.io/badge/Flutter-3.29%2B-02569B?logo=flutter)](https://flutter.dev/)
+[![WASM Ready](https://img.shields.io/badge/WASM-Ready-brightgreen)](https://dart.dev/web/wasm)
 [![Platforms](https://img.shields.io/badge/Platforms-Android%20%7C%20iOS%20%7C%20macOS%20%7C%20Windows%20%7C%20Linux%20%7C%20Web-brightgreen)](https://flutter.dev/multi-platform)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/ahmedalam782/osm_location_picker/blob/main/LICENSE)
 
 A creative, modern, and highly customizable Flutter location picker powered by [OpenStreetMap](https://www.openstreetmap.org/) and [Nominatim](https://nominatim.org/).
 
 > **No API key. No account. No billing.**
-> Everything runs on free, open-source map and geocoding services. Say goodbye to Google Maps Cloud console setups, billing credit cards, and unexpected API costs. Perfect for **production apps, prototypes, and enterprise solutions**.
+> Everything runs on free, open-source map and geocoding services. Say goodbye to Google Maps Cloud console setups, billing credit cards, and unexpected API costs. Great for **prototypes, indie apps, and small to medium production apps**.
+
+> **Using this in production?** The public OpenStreetMap tile servers and Nominatim are shared community services with [usage policies](https://operations.osmfoundation.org/policies/tiles). They're ideal for prototypes and small apps. For apps with significant traffic, point `tileUrlTemplate` at your own or a commercial tile provider, and use your own geocoder via `LocationPickerDependencies.placeSearch`.
+
+<p align="center">
+  <img src="screenshots/00-cover.png" alt="osm_location_picker presentation" width="100%" />
+</p>
 
 ---
 
 ## 📑 Table of Contents
 
+- [Screenshots & Showcase](#-screenshots--showcase)
 - [Features](#-features)
 - [Why osm_location_picker?](#-why-osm_location_picker)
 - [Platform Support](#-platform-support)
@@ -39,13 +47,29 @@ A creative, modern, and highly customizable Flutter location picker powered by [
 
 ---
 
+## 📸 Screenshots & Showcase
+
+| 🌐 Web & Desktop Experience | 🗺️ Map Selection & Confirmation |
+| :---: | :---: |
+| <img src="screenshots/01-web.png" alt="Web & Desktop Start Experience" width="100%" /> | <img src="screenshots/02-web.png" alt="Map Selection & Confirm" width="100%" /> |
+
+| 🔍 Live Search & Autocomplete | 🎨 Custom Color Themes & Branding |
+| :---: | :---: |
+| <img src="screenshots/03-web.png" alt="Live Address Search" width="100%" /> | <img src="screenshots/04-mobile.png" alt="Color Theme Palettes" width="100%" /> |
+
+| 📱 Multilingual & Responsive UI | 📍 End-to-End Selection Flow |
+| :---: | :---: |
+| <img src="screenshots/05-mobile.png" alt="Multilingual Arabic & English" width="100%" /> | <img src="screenshots/06-mobile.png" alt="Full Location Picking Flow" width="100%" /> |
+
+---
+
 ## ✨ Features
 
 - 💎 **Modern Frosted Glassmorphism**: Translucent floating cards with blur effects, adaptive shadows, and sleek borders.
 - 🎯 **Interactive 3D Radar Pin**: Animated center marker with landing contact shadow, drag physics, and precision crosshair dot.
 - 🕹️ **Floating Control Dock**: Clean docked actions for **Zoom In (+)**, **Zoom Out (-)**, and **My Location** with desktop hover effects.
 - 📋 **Copyable Coordinates Pill**: One-tap interactive badge displaying formatted latitude & longitude with clipboard copy confirmation.
-- 🔍 **Debounced Live Address Search**: Instant Nominatim search bar supporting keyboard shortcuts (<kbd>Escape</kbd> to close, <kbd>Arrow</kbd> keys to navigate).
+- 🔍 **Address Search**: Nominatim-powered search bar with keyboard shortcuts (<kbd>Escape</kbd> to close, <kbd>Arrow</kbd> keys to navigate). Swap in your own geocoder for heavy usage.
 - 🌓 **Instant Dark Mode (`forBrightness`)**: Seamlessly adapt any custom color scheme to dark mode or light mode on the fly with `.forBrightness(Brightness.dark)`.
 - 🎨 **100% Customizable Icons & Colors**: Swap any icon using Material icons, SVG assets, PNGs, Network images, or raw SVG markup.
 - 🖼️ **Static Map Thumbnail (`LocationMapPreview`)**: Display selected locations on order summaries or user profile screens with dark mode support.
@@ -59,13 +83,11 @@ A creative, modern, and highly customizable Flutter location picker powered by [
 
 | Feature | `osm_location_picker` | Google Maps Based Pickers |
 | :--- | :--- | :--- |
-| **API Key Required** | ❌ **No (Free forever)** | ✅ Yes (Mandatory) |
+| **API Key Required** | ❌ **No** | ✅ Yes (Mandatory) |
 | **Credit Card / Billing** | ❌ **No** | ✅ Required in Google Cloud |
-| **Setup Complexity** | ⚡ Add permissions & push widget | ⏳ Cloud Console, API restrictions, SHA-1 fingerprints |
+| **Setup & Cost** | ⚡ No key, no billing account | ⏳ Cloud project, API keys, billing |
 | **Map Engine** | 🗺️ OpenStreetMap & Flutter Map | 🏢 Proprietary Google Maps SDK |
 | **Styling & Theming** | 🎨 Full control (Glassmorphism, Dark Mode, SVG icons) | ⚠️ Limited to Google Maps styling JSON |
-| **Arabic & RTL Support** | 🌐 Native out of the box | ⚠️ Inconsistent address string layouts |
-| **Custom Dependency Injection** | 🧪 Built-in (`LocationPickerDependencies`) | ❌ Difficult to mock / unit test |
 
 ---
 
@@ -73,10 +95,10 @@ A creative, modern, and highly customizable Flutter location picker powered by [
 
 | Platform | Support | Requirements & Details |
 | :--- | :---: | :--- |
-| **Android** | ✅ | Works on API 21+. Release builds require network configuration. |
-| **iOS** | ✅ | iOS 12.0+. Requires location permission descriptions in `Info.plist`. |
+| **Android** | ✅ | Requires `INTERNET` and location permissions (see below). |
+| **iOS** | ✅ | Requires location permission descriptions in `Info.plist`. |
 | **macOS** | ✅ | App Sandbox location & network client entitlements required. |
-| **Web** | ✅ | Uses browser Geolocation API. **HTTPS required** in production. |
+| **Web** | ✅ | Full support for both **JavaScript** & **WebAssembly (WASM)** via `flutter build web --wasm`. **HTTPS required** in production for Geolocation. |
 | **Windows** | ✅ | Full support with mouse hover states and keyboard navigation. |
 | **Linux** | ✅ | Full support with mouse hover states and keyboard navigation. |
 
@@ -88,42 +110,25 @@ A creative, modern, and highly customizable Flutter location picker powered by [
 
 ### Android
 
-Add permissions to `android/app/src/main/AndroidManifest.xml`:
+Add the required permissions to `android/app/src/main/AndroidManifest.xml`, before the `<application>` tag:
 
 ```xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<!-- Internet & network state for map tiles and geocoding -->
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
-    <application
-        android:networkSecurityConfig="@xml/network_security_config"
-        ... >
-        ...
-    </application>
-</manifest>
+<!-- GPS & location -->
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 ```
 
-For reliable connectivity checks in release mode, create `android/app/src/main/res/xml/network_security_config.xml`:
+> **Release builds:** both `INTERNET` and `ACCESS_NETWORK_STATE` are required. The package checks connectivity before loading tiles and running searches. All map and geocoding requests use HTTPS, so no cleartext or network security configuration is needed.
 
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <base-config cleartextTrafficPermitted="true">
-        <trust-anchors>
-            <certificates src="system" />
-        </trust-anchors>
-    </base-config>
-    <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">nominatim.openstreetmap.org</domain>
-    </domain-config>
-</network-security-config>
-```
+---
 
 ### iOS
 
-Add permission descriptions to `ios/Runner/Info.plist`:
+1. Add location permission descriptions to `ios/Runner/Info.plist`:
 
 ```xml
 <key>NSLocationWhenInUseUsageDescription</key>
@@ -132,17 +137,32 @@ Add permission descriptions to `ios/Runner/Info.plist`:
 <string>This app needs access to your location to show it on the map.</string>
 ```
 
+> [!TIP]
+> **Testing on the iOS Simulator:**
+> In the iOS Simulator, the location is set to **None** by default. To simulate GPS:
+> - In Simulator menu bar: **Features** → **Location** → Choose **Apple** or **Custom Location...**
+> - Or run in terminal: `xcrun simctl location booted set 37.7749,-122.4194`
+
+---
+
 ### macOS
 
-1. In `macos/Runner/Info.plist`, add:
+1. In `macos/Podfile`, ensure the deployment target is at least `12.0`:
+```ruby
+platform :osx, '12.0'
+```
+
+2. In `macos/Runner/Info.plist`, add:
 ```xml
 <key>NSLocationUsageDescription</key>
 <string>This app needs access to your location to show it on the map.</string>
 <key>NSLocationWhenInUseUsageDescription</key>
 <string>This app needs access to your location to show it on the map.</string>
+<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+<string>This app needs access to your location to show it on the map.</string>
 ```
 
-2. In both `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements`, add:
+3. In both `macos/Runner/DebugProfile.entitlements` and `macos/Runner/Release.entitlements`, add network and location sandbox entitlements:
 ```xml
 <key>com.apple.security.network.client</key>
 <true/>
@@ -150,13 +170,25 @@ Add permission descriptions to `ios/Runner/Info.plist`:
 <true/>
 ```
 
-### Web
+---
 
-No additional code setup is required. The browser will prompt the user automatically for geolocation permissions. Modern browsers require **HTTPS** in production to grant geolocation access.
+### Web (JavaScript & WebAssembly / WASM)
+
+- **WebAssembly (WASM) Ready**: Fully compatible with `flutter build web --wasm` (uses modern standard browser APIs with zero deprecated `dart:html` or `dart:io` imports).
+- No configuration files are required. The browser will prompt the user automatically for geolocation permissions via the standard Geolocation API.
+- Modern browsers require **HTTPS** in production to grant geolocation access (`http://localhost` is allowed for local development).
 
 > [!TIP]
 > **OpenStreetMap Tile Usage on Web / Localhost:**
 > When debugging on Chrome (`localhost`), OpenStreetMap's public servers can rate-limit or block requests (`403 Forbidden` / `ClientException: Failed to fetch`) if using generic package names like `com.example.*`. Always use a unique `userAgentPackageName` (e.g. `'org.my_company.my_app'`) and provide a `fallbackUrl` (such as `'https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'`) in your `LocationPickerConfig` for guaranteed tile availability.
+
+---
+
+### Windows & Linux
+
+- No extra permissions required.
+- Internet connectivity is used for map tiles and reverse geocoding.
+- If GPS / system location service is unavailable on the desktop environment, the picker gracefully centers on `fallbackCenter` (configurable in `LocationPickerConfig`).
 
 ---
 
@@ -166,7 +198,7 @@ Add the dependency to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  osm_location_picker: ^1.0.4
+  osm_location_picker: ^1.0.5
 ```
 
 ### 1. Full-Screen Page Mode
@@ -436,15 +468,18 @@ LocationPickerView(
 
 المستخدم يمكنه تصفح الخريطة، البحث عن أي عنوان، وتأكيد موقعه بنقرة واحدة، لتقوم الحزمة بإرجاع كائن `LocationModel` يحتوي على العنوان النصي والإحداثيات الجغرافية الدقيقة.
 
+> **ملاحظة للتطبيقات الإنتاجية:** خوادم الخرائط العامة لـ OpenStreetMap وخدمة Nominatim مخصصة للمشاريع الصغيرة والتجارب. للتطبيقات ذات الاستخدام الكبير، استخدم مزوّد خرائط خاص بك عبر `tileUrlTemplate`.
+
 ### المميزات الرئيسية:
 - 🎨 **تصميم زجاجي فاخر (Glassmorphism)**: واجهات شفافة أنيقة مع تأثير التمويه (Blur) وظلال عصرية ناعمة.
 - 📍 **مؤشر رادار ثلاثي الأبعاد**: دبوس خريطة مميز مع ظل ملامس للأرض ونقطة تصويب دقيقة مع حركة واقعية عند السحب.
 - 🕹️ **منصة تحكم عائمة**: أزرار التقريب والتصغير وموقعي الحالي بتصميم موحد وتأثيرات تمرير (Hover) على سطح المكتب.
 - 📋 **شريحة نسخ الإحداثيات**: زر مدمج لنسخ خط الطول والعرض بنقرة واحدة مع إشعار تأكيد النسخ.
 - 🌓 **تحويل فوري للوضع الليلي (`forBrightness`)**: تبديل مباشر للألوان لتلائم الوضع الداكن دون فقدان لون الهوية الخاص بك.
-- 🔍 **بحث فوري مع اختصارات لوحة المفاتيح**: يدعم الإغلاق بمفتاح <kbd>Escape</kbd> والتنقل بالأسهم على الويب وسطح المكتب.
+- 🔍 **بحث عن العناوين مع اختصارات لوحة المفاتيح**: يدعم الإغلاق بمفتاح <kbd>Escape</kbd> والتنقل بالأسهم على الويب وسطح المكتب.
 - 🖼️ **معاينة مصغرة للموقع (`LocationMapPreview`)**: بطاقة خريطة مصغرة جاهزة لعرض الموقع المختار في شاشات تأكيد الطلبات أو الملف الشخصي.
 - 🌐 **دعم كامل للغة العربية والاتجاه من اليمين لليسار (RTL)**: صياغة صحيحة لعناصر العناوين العربية وتنسيق الإحداثيات الإنجليزية بدقة.
+- ⚡ **دعم كامل لتقنية WebAssembly (WASM)**: يعمل بكفاءة وأداء عالي على الويب عند التجميع بواسطة `flutter build web --wasm`.
 - 🔄 **حفظ تلقائي عند الرجوع**: لا تفقد بيانات الموقع عند الضغط على زر العودة.
 
 ### كود الاستخدام السريع:
@@ -485,5 +520,5 @@ if (result != null) {
 
 - Distributed under the **MIT License**. See [LICENSE](https://github.com/ahmedalam782/osm_location_picker/blob/main/LICENSE) for details.
 - Map tiles © [OpenStreetMap contributors](https://www.openstreetmap.org/copyright). Please review the [OSM Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles).
-- Geocoding and reverse search provided by [Nominatim](https://nominatim.org/).
+- Geocoding and reverse search provided by [Nominatim](https://nominatim.org/). Please respect the [Nominatim Usage Policy](https://operations.osmfoundation.org/policies/nominatim/).
 - Found a bug or need a new feature? Feel free to open an issue or pull request on [GitHub](https://github.com/ahmedalam782/osm_location_picker).

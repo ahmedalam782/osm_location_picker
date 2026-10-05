@@ -51,7 +51,8 @@ class _MapConfirmButtonState extends State<MapConfirmButton> {
     final darkerPrimary = Color.lerp(primary, Colors.black, 0.20) ?? primary;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    final gradient = widget.theme.accentGradient ??
+    final gradient =
+        widget.theme.accentGradient ??
         LinearGradient(
           colors: [primary, darkerPrimary],
           begin: Alignment.topLeft,
@@ -87,9 +88,10 @@ class _MapConfirmButtonState extends State<MapConfirmButton> {
 
                 // --- Action Button ---
                 MouseRegion(
-                  cursor: widget.isLoading
-                      ? SystemMouseCursors.basic
-                      : SystemMouseCursors.click,
+                  cursor:
+                      widget.isLoading
+                          ? SystemMouseCursors.basic
+                          : SystemMouseCursors.click,
                   onEnter: (_) => setState(() => _isHovered = true),
                   onExit: (_) => setState(() => _isHovered = false),
                   child: AnimatedContainer(
@@ -123,39 +125,41 @@ class _MapConfirmButtonState extends State<MapConfirmButton> {
                         splashColor: Colors.white.withValues(alpha: 0.2),
                         highlightColor: Colors.white.withValues(alpha: 0.1),
                         child: Center(
-                          child: widget.isLoading
-                              ? SizedBox(
-                                  width: 22,
-                                  height: 22,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.2,
-                                    color: widget.theme.textLightColor,
-                                  ),
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    LocationPickerIconView(
-                                      icon: widget.theme.confirmIcon ??
-                                          const LocationPickerIcon.icon(
-                                            Icons.check_circle_rounded,
-                                            size: 20,
-                                          ),
+                          child:
+                              widget.isLoading
+                                  ? SizedBox(
+                                    width: 22,
+                                    height: 22,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
                                       color: widget.theme.textLightColor,
-                                      size: 20,
                                     ),
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      widget.title,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w700,
+                                  )
+                                  : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      LocationPickerIconView(
+                                        icon:
+                                            widget.theme.confirmIcon ??
+                                            const LocationPickerIcon.icon(
+                                              Icons.check_circle_rounded,
+                                              size: 20,
+                                            ),
                                         color: widget.theme.textLightColor,
-                                        letterSpacing: 0.3,
+                                        size: 20,
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        widget.title,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: widget.theme.textLightColor,
+                                          letterSpacing: 0.3,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                         ),
                       ),
                     ),
@@ -194,9 +198,10 @@ class _CoordinatesBadge extends StatelessWidget {
     final surfaceColor = theme.cardColor.withValues(
       alpha: theme.glassmorphism ? 0.85 : 1.0,
     );
-    final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.12)
-        : theme.borderColor.withValues(alpha: 0.35);
+    final borderColor =
+        isDark
+            ? Colors.white.withValues(alpha: 0.12)
+            : theme.borderColor.withValues(alpha: 0.35);
 
     Widget chip = Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -248,10 +253,7 @@ class _CoordinatesBadge extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: Tooltip(
         message: 'Click to copy coordinates',
-        child: GestureDetector(
-          onTap: onTap,
-          child: chip,
-        ),
+        child: GestureDetector(onTap: onTap, child: chip),
       ),
     );
   }

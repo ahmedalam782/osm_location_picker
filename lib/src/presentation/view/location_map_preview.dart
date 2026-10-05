@@ -42,10 +42,10 @@ class LocationMapPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final activeTheme = (theme ?? LocationPickerTheme.of(context)).forBrightness(
-      isDark ? Brightness.dark : Brightness.light,
-    );
-    final pin = activeTheme.selectedIcon ??
+    final activeTheme = (theme ?? LocationPickerTheme.of(context))
+        .forBrightness(isDark ? Brightness.dark : Brightness.light);
+    final pin =
+        activeTheme.selectedIcon ??
         activeTheme.pinIcon ??
         LocationPickerIcon.pin;
     final pinSize = pin.size ?? 42.0;
@@ -63,22 +63,57 @@ class LocationMapPreview extends StatelessWidget {
             // --- 1. Map Tiles (TileLayer filtered for dark/light mode) ---
             Positioned.fill(
               child: ColorFiltered(
-                colorFilter: useDarkTiles
-                    ? const ColorFilter.matrix([
-                        -0.2126, -0.7152, -0.0722, 0, 255,
-                        -0.2126, -0.7152, -0.0722, 0, 255,
-                        -0.2126, -0.7152, -0.0722, 0, 255,
-                        0, 0, 0, 1, 0,
-                      ])
-                    : const ColorFilter.matrix([
-                        1, 0, 0, 0, 0,
-                        0, 1, 0, 0, 0,
-                        0, 0, 1, 0, 0,
-                        0, 0, 0, 1, 0,
-                      ]),
+                colorFilter:
+                    useDarkTiles
+                        ? const ColorFilter.matrix([
+                          -0.2126,
+                          -0.7152,
+                          -0.0722,
+                          0,
+                          255,
+                          -0.2126,
+                          -0.7152,
+                          -0.0722,
+                          0,
+                          255,
+                          -0.2126,
+                          -0.7152,
+                          -0.0722,
+                          0,
+                          255,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                        ])
+                        : const ColorFilter.matrix([
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                          0,
+                          0,
+                          0,
+                          0,
+                          1,
+                          0,
+                        ]),
                 child: FlutterMap(
                   // Key ensures whenever coordinates or zoom change, the map immediately updates
-                  key: ValueKey('${location.latitude}_${location.longitude}_$zoom'),
+                  key: ValueKey(
+                    '${location.latitude}_${location.longitude}_$zoom',
+                  ),
                   options: MapOptions(
                     initialCenter: location,
                     initialZoom: zoom,

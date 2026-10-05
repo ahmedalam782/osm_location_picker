@@ -158,9 +158,10 @@ class _MapAddressHeaderState extends State<MapAddressHeader> {
     final surfaceColor = widget.theme.cardColor.withValues(
       alpha: widget.theme.glassmorphism ? 0.88 : 1.0,
     );
-    final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.12)
-        : widget.theme.borderColor.withValues(alpha: 0.45);
+    final borderColor =
+        isDark
+            ? Colors.white.withValues(alpha: 0.12)
+            : widget.theme.borderColor.withValues(alpha: 0.45);
     final radius = BorderRadius.circular(widget.theme.borderRadius);
 
     return Positioned(
@@ -269,80 +270,97 @@ class _MapAddressHeaderState extends State<MapAddressHeader> {
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
-                                  child: widget.isLoading
-                                      ? Row(
-                                          children: [
-                                            SizedBox(
-                                              width: 14,
-                                              height: 14,
-                                              child: CircularProgressIndicator(
-                                                strokeWidth: 2,
-                                                color: widget.theme.primaryColor,
+                                  child:
+                                      widget.isLoading
+                                          ? Row(
+                                            children: [
+                                              SizedBox(
+                                                width: 14,
+                                                height: 14,
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      color:
+                                                          widget
+                                                              .theme
+                                                              .primaryColor,
+                                                    ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 10),
-                                            Expanded(
-                                              child: Text(
-                                                widget.addressText,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: widget.theme.textDarkColor
-                                                      .withValues(alpha: 0.7),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              place,
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                              textAlign: TextAlign.start,
-                                              textDirection: isRtl
-                                                  ? TextDirection.rtl
-                                                  : TextDirection.ltr,
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w700,
-                                                color: widget.theme.textDarkColor,
-                                              ),
-                                            ),
-                                            if (area.isNotEmpty) ...[
-                                              const SizedBox(height: 2),
-                                              Text(
-                                                area,
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                textAlign: TextAlign.start,
-                                                textDirection: isRtl
-                                                    ? TextDirection.rtl
-                                                    : TextDirection.ltr,
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: widget.theme.textDarkColor
-                                                      .withValues(alpha: 0.65),
+                                              const SizedBox(width: 10),
+                                              Expanded(
+                                                child: Text(
+                                                  widget.addressText,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: widget
+                                                        .theme
+                                                        .textDarkColor
+                                                        .withValues(alpha: 0.7),
+                                                  ),
                                                 ),
                                               ),
                                             ],
-                                          ],
-                                        ),
+                                          )
+                                          : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                place,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                textAlign: TextAlign.start,
+                                                textDirection:
+                                                    isRtl
+                                                        ? TextDirection.rtl
+                                                        : TextDirection.ltr,
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w700,
+                                                  color:
+                                                      widget
+                                                          .theme
+                                                          .textDarkColor,
+                                                ),
+                                              ),
+                                              if (area.isNotEmpty) ...[
+                                                const SizedBox(height: 2),
+                                                Text(
+                                                  area,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  textAlign: TextAlign.start,
+                                                  textDirection:
+                                                      isRtl
+                                                          ? TextDirection.rtl
+                                                          : TextDirection.ltr,
+                                                  style: TextStyle(
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: widget
+                                                        .theme
+                                                        .textDarkColor
+                                                        .withValues(
+                                                          alpha: 0.65,
+                                                        ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ],
+                                          ),
                                 ),
                                 if (widget.showSearch) ...[
                                   const SizedBox(width: 8),
                                   Icon(
                                     Icons.tune_rounded,
                                     size: 18,
-                                    color: widget.theme.textDarkColor.withValues(
-                                      alpha: 0.4,
-                                    ),
+                                    color: widget.theme.textDarkColor
+                                        .withValues(alpha: 0.4),
                                   ),
                                 ],
                               ],
@@ -351,7 +369,9 @@ class _MapAddressHeaderState extends State<MapAddressHeader> {
                         ),
                       if ((_searching && _loading) ||
                           (!_searching && widget.isLoading))
-                        _GlowingAddressLoadBar(color: widget.theme.primaryColor),
+                        _GlowingAddressLoadBar(
+                          color: widget.theme.primaryColor,
+                        ),
                       if (_searching &&
                           _hasSearched &&
                           !_loading &&
@@ -476,9 +496,10 @@ class _SearchResultTileState extends State<_SearchResultTile> {
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: Material(
-        color: highlighted
-            ? widget.theme.textDarkColor.withValues(alpha: 0.06)
-            : Colors.transparent,
+        color:
+            highlighted
+                ? widget.theme.textDarkColor.withValues(alpha: 0.06)
+                : Colors.transparent,
         child: InkWell(
           onTap: widget.onTap,
           child: Padding(

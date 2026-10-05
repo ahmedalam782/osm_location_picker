@@ -159,9 +159,8 @@ class _LocationPickerViewState extends State<LocationPickerView> {
       placeSearch: _dependencies.placeSearch,
       onConfirmed: widget.asPage ? null : widget.onConfirmed,
     );
-    final picker = widget.asPage
-        ? _page(activeTheme, activeStrings, isDark, body)
-        : body;
+    final picker =
+        widget.asPage ? _page(activeTheme, activeStrings, isDark, body) : body;
     return _withFont(context, fontFamily, picker);
   }
 
@@ -177,14 +176,14 @@ class _LocationPickerViewState extends State<LocationPickerView> {
         final state = notifier.value;
         final center = state.currentCenter ?? state.position;
         if (center != null) {
-          final address = (state.addressData.data != null &&
-                  state.addressData.data!.trim().isNotEmpty)
-              ? state.addressData.data!
-              : activeStrings.currentLocation;
-          Navigator.of(context).pop(LocationModel(
-            latLng: center,
-            address: address,
-          ));
+          final address =
+              (state.addressData.data != null &&
+                      state.addressData.data!.trim().isNotEmpty)
+                  ? state.addressData.data!
+                  : activeStrings.currentLocation;
+          Navigator.of(
+            context,
+          ).pop(LocationModel(latLng: center, address: address));
           return;
         }
       }
@@ -246,15 +245,19 @@ class _LocationPickerViewState extends State<LocationPickerView> {
                           ),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.1)
-                                : activeTheme.borderColor.withValues(alpha: 0.35),
+                            color:
+                                isDark
+                                    ? Colors.white.withValues(alpha: 0.1)
+                                    : activeTheme.borderColor.withValues(
+                                      alpha: 0.35,
+                                    ),
                             width: 0.8,
                           ),
                         ),
                         child: Center(
                           child: LocationPickerIconView(
-                            icon: activeTheme.backIcon ??
+                            icon:
+                                activeTheme.backIcon ??
                                 const LocationPickerIcon.icon(
                                   Icons.arrow_back_ios_new_rounded,
                                   size: 16,

@@ -148,11 +148,13 @@ class _MapCenterMarkerState extends State<MapCenterMarker>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: (isDark ? Colors.black : primaryColor).withValues(
-                          alpha: isDark
-                              ? 0.55 * (1.0 - (0.4 * lift))
-                              : 0.35 * (1.0 - (0.4 * lift)),
-                        ),
+                        color: (isDark ? Colors.black : primaryColor)
+                            .withValues(
+                              alpha:
+                                  isDark
+                                      ? 0.55 * (1.0 - (0.4 * lift))
+                                      : 0.35 * (1.0 - (0.4 * lift)),
+                            ),
                         blurRadius: 6.0 + (10.0 * lift),
                         spreadRadius: 1.0 + (2.0 * lift),
                       ),
@@ -170,10 +172,7 @@ class _MapCenterMarkerState extends State<MapCenterMarker>
                   decoration: BoxDecoration(
                     color: primaryColor,
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 1,
-                    ),
+                    border: Border.all(color: Colors.white, width: 1),
                   ),
                 ),
               ),

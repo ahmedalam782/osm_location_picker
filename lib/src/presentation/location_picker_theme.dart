@@ -287,7 +287,9 @@ class LocationPickerTheme {
       textDarkColor: isDark ? const Color(0xffF2F5F3) : const Color(0xff0A100B),
       textLightColor:
           isDark ? const Color(0xff0A100B) : const Color(0xffffffff),
-      controlsBackgroundColor: controlsBackgroundColor ?? (isDark ? const Color(0xff1C221D) : Colors.white),
+      controlsBackgroundColor:
+          controlsBackgroundColor ??
+          (isDark ? const Color(0xff1C221D) : Colors.white),
       loadingLottieAsset: loadingLottieAsset,
       errorLottieAsset: errorLottieAsset,
       noInternetLottieAsset: noInternetLottieAsset,
@@ -299,8 +301,8 @@ class LocationPickerTheme {
       zoomInIcon: zoomInIcon,
       zoomOutIcon: zoomOutIcon,
       backIcon: backIcon,
-      fontFamily: fontFamily ??
-          Theme.of(context).textTheme.bodyMedium?.fontFamily,
+      fontFamily:
+          fontFamily ?? Theme.of(context).textTheme.bodyMedium?.fontFamily,
       glassmorphism: glassmorphism,
       borderRadius: borderRadius,
       accentGradient: accentGradient,

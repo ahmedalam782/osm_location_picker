@@ -11,8 +11,9 @@ void main() {
       expect(defaultTheme.borderRadius, 16.0);
       expect(defaultTheme.primaryColor, const Color(0xffEA3433));
 
-      final fromPrimary =
-          LocationPickerTheme.fromPrimary(const Color(0xff2563EB));
+      final fromPrimary = LocationPickerTheme.fromPrimary(
+        const Color(0xff2563EB),
+      );
       expect(fromPrimary.primaryColor, const Color(0xff2563EB));
       expect(fromPrimary.glassmorphism, true);
 
@@ -33,8 +34,9 @@ void main() {
     });
 
     test('forBrightness adapts properly to dark and light mode', () {
-      final fromPrimary =
-          LocationPickerTheme.fromPrimary(const Color(0xff2563EB));
+      final fromPrimary = LocationPickerTheme.fromPrimary(
+        const Color(0xff2563EB),
+      );
       final dark = fromPrimary.forBrightness(Brightness.dark);
 
       expect(dark.primaryColor, fromPrimary.primaryColor);

@@ -247,9 +247,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (_selectedLocation?.latLng != null) ...[
                   Container(
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xff1C221D)
-                          : Colors.white,
+                      color: isDark ? const Color(0xff1C221D) : Colors.white,
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: isDark
@@ -406,8 +404,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           vertical: 6,
                                         ),
                                         shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -460,7 +459,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           style: TextStyle(
                             fontSize: 17,
                             fontWeight: FontWeight.w700,
-                            color: isDark ? Colors.white : const Color(0xff111827),
+                            color: isDark
+                                ? Colors.white
+                                : const Color(0xff111827),
                           ),
                         ),
                         const SizedBox(height: 6),
@@ -489,9 +490,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: isDark
-                          ? const Color(0xff181D19)
-                          : Colors.white,
+                      color: isDark ? const Color(0xff181D19) : Colors.white,
                       borderRadius: BorderRadius.circular(30),
                       border: Border.all(
                         color: isDark
@@ -580,18 +579,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                     strings: widget.strings,
                                     theme: LocationPickerTheme.fromPrimary(
                                       _accent,
-                                      fontFamily: Theme.of(context)
-                                          .textTheme
-                                          .bodyMedium
-                                          ?.fontFamily,
-                                      confirmIcon: const LocationPickerIcon.icon(
-                                        Icons.check_rounded,
-                                      ),
+                                      fontFamily: Theme.of(
+                                        context,
+                                      ).textTheme.bodyMedium?.fontFamily,
+                                      confirmIcon:
+                                          const LocationPickerIcon.icon(
+                                            Icons.check_rounded,
+                                          ),
                                     ),
                                     config: LocationPickerConfig(
                                       tileUrlTemplate:
                                           'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                                      acceptLanguage: widget.locale.languageCode,
+                                      acceptLanguage:
+                                          widget.locale.languageCode,
                                       nominatimUserAgent:
                                           'OsmLocationPickerApp/1.0',
                                       userAgentPackageName:

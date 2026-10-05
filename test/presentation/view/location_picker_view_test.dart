@@ -8,32 +8,34 @@ import '../../test_helpers.dart';
 
 void main() {
   group('LocationPickerView', () {
-    testWidgets('widget mode confirms in place and does not show the page title',
-        (tester) async {
-      LocationModel? selected;
-      await tester.pumpWidget(
-        MaterialApp(
-          home: Scaffold(
-            body: LocationPickerView.widget(
-              initialLatLng: const LatLng(30.0444, 31.2357),
-              initialAddress: 'Cairo',
-              dependencies: fakeDependencies(),
-              onConfirmed: (location) => selected = location,
+    testWidgets(
+      'widget mode confirms in place and does not show the page title',
+      (tester) async {
+        LocationModel? selected;
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Scaffold(
+              body: LocationPickerView.widget(
+                initialLatLng: const LatLng(30.0444, 31.2357),
+                initialAddress: 'Cairo',
+                dependencies: fakeDependencies(),
+                onConfirmed: (location) => selected = location,
+              ),
             ),
           ),
-        ),
-      );
-      await tester.pump();
+        );
+        await tester.pump();
 
-      expect(find.text('Select Location'), findsNothing);
-      expect(find.text('Confirm Location'), findsOneWidget);
+        expect(find.text('Select Location'), findsNothing);
+        expect(find.text('Confirm Location'), findsOneWidget);
 
-      await tester.tap(find.text('Confirm Location'));
-      await tester.pump();
+        await tester.tap(find.text('Confirm Location'));
+        await tester.pump();
 
-      expect(selected?.address, 'Cairo');
-      expect(selected?.latLng, const LatLng(30.0444, 31.2357));
-    });
+        expect(selected?.address, 'Cairo');
+        expect(selected?.latLng, const LatLng(30.0444, 31.2357));
+      },
+    );
 
     testWidgets('page mode shows the app bar title', (tester) async {
       await tester.pumpWidget(
@@ -51,28 +53,31 @@ void main() {
       expect(find.text('Confirm Location'), findsOneWidget);
     });
 
-    testWidgets('page mode back button returns current location model',
-        (tester) async {
+    testWidgets('page mode back button returns current location model', (
+      tester,
+    ) async {
       LocationModel? popped;
       await tester.pumpWidget(
         MaterialApp(
           home: Builder(
-            builder: (context) => Scaffold(
-              body: ElevatedButton(
-                onPressed: () async {
-                  popped = await Navigator.of(context).push<LocationModel>(
-                    MaterialPageRoute(
-                      builder: (_) => LocationPickerView(
-                        initialLatLng: const LatLng(30.0444, 31.2357),
-                        initialAddress: 'Cairo',
-                        dependencies: fakeDependencies(),
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Open'),
-              ),
-            ),
+            builder:
+                (context) => Scaffold(
+                  body: ElevatedButton(
+                    onPressed: () async {
+                      popped = await Navigator.of(context).push<LocationModel>(
+                        MaterialPageRoute(
+                          builder:
+                              (_) => LocationPickerView(
+                                initialLatLng: const LatLng(30.0444, 31.2357),
+                                initialAddress: 'Cairo',
+                                dependencies: fakeDependencies(),
+                              ),
+                        ),
+                      );
+                    },
+                    child: const Text('Open'),
+                  ),
+                ),
           ),
         ),
       );

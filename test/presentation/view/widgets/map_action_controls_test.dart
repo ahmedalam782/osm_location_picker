@@ -5,8 +5,9 @@ import 'package:osm_location_picker/src/presentation/view/widgets/map_action_con
 
 void main() {
   group('MapActionControls', () {
-    testWidgets('renders zoom in, zoom out, and my location buttons',
-        (tester) async {
+    testWidgets('renders zoom in, zoom out, and my location buttons', (
+      tester,
+    ) async {
       bool zoomedIn = false;
       bool zoomedOut = false;
       bool myLocation = false;

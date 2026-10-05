@@ -54,7 +54,7 @@ class GeolocatorDeviceLocation implements DeviceLocation {
     try {
       final position = await Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
-          accuracy: kIsWeb ? LocationAccuracy.low : LocationAccuracy.medium,
+          accuracy: kIsWeb ? LocationAccuracy.low : LocationAccuracy.high,
           timeLimit: const Duration(seconds: 15),
         ),
       );

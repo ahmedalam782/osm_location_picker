@@ -6,8 +6,7 @@ import 'package:osm_location_picker/src/presentation/view/widgets/map_confirm_bu
 
 void main() {
   group('MapConfirmButton', () {
-    testWidgets('renders coordinates and handles tap callback',
-        (tester) async {
+    testWidgets('renders coordinates and handles tap callback', (tester) async {
       bool confirmed = false;
 
       await tester.pumpWidget(

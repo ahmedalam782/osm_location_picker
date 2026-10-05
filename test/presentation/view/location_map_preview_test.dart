@@ -10,9 +10,7 @@ void main() {
       await tester.pumpWidget(
         const MaterialApp(
           home: Scaffold(
-            body: LocationMapPreview(
-              location: LatLng(30.0444, 31.2357),
-            ),
+            body: LocationMapPreview(location: LatLng(30.0444, 31.2357)),
           ),
         ),
       );

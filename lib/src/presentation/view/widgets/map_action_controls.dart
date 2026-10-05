@@ -34,9 +34,10 @@ class MapActionControls extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = (theme.controlsBackgroundColor ?? theme.cardColor)
         .withValues(alpha: theme.glassmorphism ? 0.82 : 1.0);
-    final borderColor = isDark
-        ? Colors.white.withValues(alpha: 0.12)
-        : theme.borderColor.withValues(alpha: 0.4);
+    final borderColor =
+        isDark
+            ? Colors.white.withValues(alpha: 0.12)
+            : theme.borderColor.withValues(alpha: 0.4);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -45,77 +46,87 @@ class MapActionControls extends StatelessWidget {
         // --- Zoom In & Out Cluster ---
         if (showZoomControls)
           _FrostedContainer(
-          theme: theme,
-          borderRadius: BorderRadius.circular(14),
-          surfaceColor: surfaceColor,
-          borderColor: borderColor,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _ActionButton(
-                tooltip: 'Zoom in',
-                icon: LocationPickerIconView(
-                  icon: theme.zoomInIcon ??
-                      const LocationPickerIcon.icon(Icons.add_rounded, size: 22),
-                  color: theme.textDarkColor,
-                  size: 22,
+            theme: theme,
+            borderRadius: BorderRadius.circular(14),
+            surfaceColor: surfaceColor,
+            borderColor: borderColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _ActionButton(
+                  tooltip: 'Zoom in',
+                  icon: LocationPickerIconView(
+                    icon:
+                        theme.zoomInIcon ??
+                        const LocationPickerIcon.icon(
+                          Icons.add_rounded,
+                          size: 22,
+                        ),
+                    color: theme.textDarkColor,
+                    size: 22,
+                  ),
+                  theme: theme,
+                  onTap: onZoomIn,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(14),
+                  ),
                 ),
-                theme: theme,
-                onTap: onZoomIn,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-              ),
-              Container(
-                width: 32,
-                height: 1,
-                color: borderColor,
-              ),
-              _ActionButton(
-                tooltip: 'Zoom out',
-                icon: LocationPickerIconView(
-                  icon: theme.zoomOutIcon ??
-                      const LocationPickerIcon.icon(Icons.remove_rounded, size: 22),
-                  color: theme.textDarkColor,
-                  size: 22,
+                Container(width: 32, height: 1, color: borderColor),
+                _ActionButton(
+                  tooltip: 'Zoom out',
+                  icon: LocationPickerIconView(
+                    icon:
+                        theme.zoomOutIcon ??
+                        const LocationPickerIcon.icon(
+                          Icons.remove_rounded,
+                          size: 22,
+                        ),
+                    color: theme.textDarkColor,
+                    size: 22,
+                  ),
+                  theme: theme,
+                  onTap: onZoomOut,
+                  borderRadius: const BorderRadius.vertical(
+                    bottom: Radius.circular(14),
+                  ),
                 ),
-                theme: theme,
-                onTap: onZoomOut,
-                borderRadius: const BorderRadius.vertical(bottom: Radius.circular(14)),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
 
-        if (showZoomControls && showMyLocation)
-          const SizedBox(height: 12),
+        if (showZoomControls && showMyLocation) const SizedBox(height: 12),
 
         // --- My Location Button ---
         if (showMyLocation)
           _FrostedContainer(
-          theme: theme,
-          borderRadius: BorderRadius.circular(14),
-          surfaceColor: surfaceColor,
-          borderColor: borderColor,
-          child: _ActionButton(
-            tooltip: 'My location',
-            icon: isLocating
-                ? SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2.2,
-                      color: theme.primaryColor,
-                    ),
-                  )
-                : LocationPickerIconView(
-                    icon: theme.myLocationIcon ?? LocationPickerIcon.myLocation,
-                    color: theme.primaryColor,
-                    size: 22,
-                  ),
             theme: theme,
-            onTap: onMyLocation,
             borderRadius: BorderRadius.circular(14),
+            surfaceColor: surfaceColor,
+            borderColor: borderColor,
+            child: _ActionButton(
+              tooltip: 'My location',
+              icon:
+                  isLocating
+                      ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.2,
+                          color: theme.primaryColor,
+                        ),
+                      )
+                      : LocationPickerIconView(
+                        icon:
+                            theme.myLocationIcon ??
+                            LocationPickerIcon.myLocation,
+                        color: theme.primaryColor,
+                        size: 22,
+                      ),
+              theme: theme,
+              onTap: onMyLocation,
+              borderRadius: BorderRadius.circular(14),
+            ),
           ),
-        ),
       ],
     );
   }
@@ -192,9 +203,10 @@ class _ActionButtonState extends State<_ActionButton> {
         onEnter: (_) => setState(() => _isHovered = true),
         onExit: (_) => setState(() => _isHovered = false),
         child: Material(
-          color: _isHovered
-              ? widget.theme.primaryColor.withValues(alpha: 0.12)
-              : Colors.transparent,
+          color:
+              _isHovered
+                  ? widget.theme.primaryColor.withValues(alpha: 0.12)
+                  : Colors.transparent,
           borderRadius: widget.borderRadius,
           child: InkWell(
             onTap: widget.onTap,
@@ -204,9 +216,7 @@ class _ActionButtonState extends State<_ActionButton> {
             child: SizedBox(
               width: 44,
               height: 44,
-              child: Center(
-                child: widget.icon,
-              ),
+              child: Center(child: widget.icon),
             ),
           ),
         ),

@@ -19,15 +19,18 @@ class LocationPickerErrorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorMessage = message != null ? message.toString() : 'Unexpected error occurred';
+    final errorMessage =
+        message != null ? message.toString() : 'Unexpected error occurred';
 
     // Check if offline failure
-    final isOffline = errorMessage.contains('لا يوجد') || 
-                      errorMessage.toLowerCase().contains('internet') || 
-                      errorMessage.toLowerCase().contains('offline') || 
-                      errorMessage.toLowerCase().contains('connection');
+    final isOffline =
+        errorMessage.contains('لا يوجد') ||
+        errorMessage.toLowerCase().contains('internet') ||
+        errorMessage.toLowerCase().contains('offline') ||
+        errorMessage.toLowerCase().contains('connection');
 
-    final String? errorLottie = isOffline ? theme.noInternetLottieAsset : theme.errorLottieAsset;
+    final String? errorLottie =
+        isOffline ? theme.noInternetLottieAsset : theme.errorLottieAsset;
 
     final content = Center(
       child: Padding(
@@ -42,18 +45,21 @@ class LocationPickerErrorWidget extends StatelessWidget {
               // Animated concentric rings and glow background
               _AnimatedErrorBackground(
                 theme: theme,
-                child: errorLottie != null
-                    ? Lottie.asset(
-                        errorLottie,
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.contain,
-                      )
-                    : Icon(
-                        isOffline ? Icons.wifi_off_rounded : Icons.error_outline_rounded,
-                        size: 64,
-                        color: theme.primaryColor,
-                      ),
+                child:
+                    errorLottie != null
+                        ? Lottie.asset(
+                          errorLottie,
+                          width: 150,
+                          height: 150,
+                          fit: BoxFit.contain,
+                        )
+                        : Icon(
+                          isOffline
+                              ? Icons.wifi_off_rounded
+                              : Icons.error_outline_rounded,
+                          size: 64,
+                          color: theme.primaryColor,
+                        ),
               ),
               const SizedBox(height: 24),
 
@@ -69,9 +75,10 @@ class LocationPickerErrorWidget extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? const Color(0xff0A100B)
-                      : Colors.white.withValues(alpha: 0.9),
+                  color:
+                      Theme.of(context).brightness == Brightness.light
+                          ? const Color(0xff0A100B)
+                          : Colors.white.withValues(alpha: 0.9),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -79,7 +86,9 @@ class LocationPickerErrorWidget extends StatelessWidget {
 
               // Error Message
               Text(
-                errorMessage.replaceFirst('Exception: ', '').replaceFirst('Exception', ''),
+                errorMessage
+                    .replaceFirst('Exception: ', '')
+                    .replaceFirst('Exception', ''),
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w400,
@@ -114,12 +123,14 @@ class LocationPickerErrorWidget extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                     ),
                   ),
                 ),
               ],
-
             ],
           ),
         ),
@@ -128,7 +139,8 @@ class LocationPickerErrorWidget extends StatelessWidget {
 
     final VoidCallback? retryCallback = onRetry ?? onDismiss;
 
-    final bool isMobile = !kIsWeb &&
+    final bool isMobile =
+        !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.android ||
             defaultTargetPlatform == TargetPlatform.iOS);
 
@@ -142,12 +154,7 @@ class LocationPickerErrorWidget extends StatelessWidget {
           physics: const AlwaysScrollableScrollPhysics(
             parent: BouncingScrollPhysics(),
           ),
-          slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: content,
-            ),
-          ],
+          slivers: [SliverFillRemaining(hasScrollBody: false, child: content)],
         ),
       );
     }
@@ -180,10 +187,7 @@ class _AnimatedErrorBackgroundState extends State<_AnimatedErrorBackground>
     )..repeat(reverse: true);
 
     _floatingAnimation = Tween<double>(begin: 0, end: -10).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOutSine,
-      ),
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOutSine),
     );
   }
 

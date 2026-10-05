@@ -86,11 +86,12 @@ String _subtitleFrom(
     }
     if (parts.isNotEmpty) return parts.join(', ');
   }
-  final rest = displayName
-      .split(RegExp(r'\s*[,،]\s*'))
-      .map((part) => part.trim())
-      .where((part) => part.isNotEmpty && part != title)
-      .toList();
+  final rest =
+      displayName
+          .split(RegExp(r'\s*[,،]\s*'))
+          .map((part) => part.trim())
+          .where((part) => part.isNotEmpty && part != title)
+          .toList();
   return rest.join(', ');
 }
 

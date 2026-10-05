@@ -220,38 +220,39 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
             // Confirm Button (Visible if showConfirmButton is true)
             if (widget.config.showConfirmButton)
               MapConfirmButton(
-              theme: widget.theme,
-              title: widget.strings.confirmLocation,
-              coordinates: state.currentCenter ??
-                  state.position ??
-                  widget.config.fallbackCenter,
-              isLoading: state.addressData.state == StatusState.loading ||
-                  state.isMoving,
-              onTap: () {
-                final currentState = _notifier.value;
-                if (currentState.isMoving) return;
-                final center = currentState.currentCenter ??
-                    currentState.position ??
-                    widget.config.fallbackCenter;
-                final resolvedAddress =
-                    (currentState.addressData.data != null &&
-                            currentState.addressData.data!
-                                .trim()
-                                .isNotEmpty)
-                        ? currentState.addressData.data!
-                        : widget.strings.currentLocation;
-                final selected = LocationModel(
-                  latLng: center,
-                  address: resolvedAddress,
-                );
-                final onConfirmed = widget.onConfirmed;
-                if (onConfirmed != null) {
-                  onConfirmed(selected);
-                } else {
-                  Navigator.of(context).pop(selected);
-                }
-              },
-            ),
+                theme: widget.theme,
+                title: widget.strings.confirmLocation,
+                coordinates:
+                    state.currentCenter ??
+                    state.position ??
+                    widget.config.fallbackCenter,
+                isLoading:
+                    state.addressData.state == StatusState.loading ||
+                    state.isMoving,
+                onTap: () {
+                  final currentState = _notifier.value;
+                  if (currentState.isMoving) return;
+                  final center =
+                      currentState.currentCenter ??
+                      currentState.position ??
+                      widget.config.fallbackCenter;
+                  final resolvedAddress =
+                      (currentState.addressData.data != null &&
+                              currentState.addressData.data!.trim().isNotEmpty)
+                          ? currentState.addressData.data!
+                          : widget.strings.currentLocation;
+                  final selected = LocationModel(
+                    latLng: center,
+                    address: resolvedAddress,
+                  );
+                  final onConfirmed = widget.onConfirmed;
+                  if (onConfirmed != null) {
+                    onConfirmed(selected);
+                  } else {
+                    Navigator.of(context).pop(selected);
+                  }
+                },
+              ),
 
             // Error overlay (rendered as an overlay on the map, transparent/semi-transparent background)
             if (state.addressData.state == StatusState.failure)
@@ -376,4 +377,3 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
     );
   }
 }
-
