@@ -11,6 +11,8 @@ class MapActionControls extends StatelessWidget {
   final VoidCallback onMyLocation;
   final LocationPickerTheme theme;
   final bool isLocating;
+  final bool showZoomControls;
+  final bool showMyLocation;
 
   const MapActionControls({
     super.key,
@@ -19,10 +21,16 @@ class MapActionControls extends StatelessWidget {
     required this.onMyLocation,
     required this.theme,
     this.isLocating = false,
+    this.showZoomControls = true,
+    this.showMyLocation = true,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (!showZoomControls && !showMyLocation) {
+      return const SizedBox.shrink();
+    }
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final surfaceColor = (theme.controlsBackgroundColor ?? theme.cardColor)
         .withValues(alpha: theme.glassmorphism ? 0.82 : 1.0);
@@ -35,7 +43,8 @@ class MapActionControls extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         // --- Zoom In & Out Cluster ---
-        _FrostedContainer(
+        if (showZoomControls)
+          _FrostedContainer(
           theme: theme,
           borderRadius: BorderRadius.circular(14),
           surfaceColor: surfaceColor,
@@ -76,10 +85,12 @@ class MapActionControls extends StatelessWidget {
           ),
         ),
 
-        const SizedBox(height: 12),
+        if (showZoomControls && showMyLocation)
+          const SizedBox(height: 12),
 
         // --- My Location Button ---
-        _FrostedContainer(
+        if (showMyLocation)
+          _FrostedContainer(
           theme: theme,
           borderRadius: BorderRadius.circular(14),
           surfaceColor: surfaceColor,

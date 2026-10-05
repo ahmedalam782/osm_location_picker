@@ -277,7 +277,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           height: 200,
                           theme: LocationPickerTheme.fromPrimary(_accent),
                           config: const LocationPickerConfig(
-                            userAgentPackageName: 'com.example.location_picker',
+                            tileUrlTemplate:
+                                'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'org.osm.location_picker',
                           ),
                         ),
 
@@ -587,11 +589,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     config: LocationPickerConfig(
+                                      tileUrlTemplate:
+                                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                                       acceptLanguage: widget.locale.languageCode,
                                       nominatimUserAgent:
-                                          'LocationPickerExample/1.0',
+                                          'OsmLocationPickerApp/1.0',
                                       userAgentPackageName:
-                                          'com.example.location_picker',
+                                          'org.osm.location_picker',
                                     ),
                                   ),
                                 ),

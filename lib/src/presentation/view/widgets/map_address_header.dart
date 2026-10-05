@@ -19,6 +19,7 @@ class MapAddressHeader extends StatefulWidget {
   final PlaceSearch placeSearch;
   final LatLng? near;
   final bool isLoading;
+  final bool showSearch;
   final void Function(LatLng position, String address) onLocationSelected;
 
   const MapAddressHeader({
@@ -29,6 +30,7 @@ class MapAddressHeader extends StatefulWidget {
     required this.placeSearch,
     required this.near,
     required this.isLoading,
+    this.showSearch = true,
     required this.onLocationSelected,
   });
 
@@ -237,7 +239,7 @@ class _MapAddressHeaderState extends State<MapAddressHeader> {
                         )
                       else
                         InkWell(
-                          onTap: _openSearch,
+                          onTap: widget.showSearch ? _openSearch : null,
                           borderRadius: radius,
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
@@ -333,14 +335,16 @@ class _MapAddressHeaderState extends State<MapAddressHeader> {
                                           ],
                                         ),
                                 ),
-                                const SizedBox(width: 8),
-                                Icon(
-                                  Icons.tune_rounded,
-                                  size: 18,
-                                  color: widget.theme.textDarkColor.withValues(
-                                    alpha: 0.4,
+                                if (widget.showSearch) ...[
+                                  const SizedBox(width: 8),
+                                  Icon(
+                                    Icons.tune_rounded,
+                                    size: 18,
+                                    color: widget.theme.textDarkColor.withValues(
+                                      alpha: 0.4,
+                                    ),
                                   ),
-                                ),
+                                ],
                               ],
                             ),
                           ),

@@ -34,7 +34,12 @@ class LocationPickerDependencies {
   factory LocationPickerDependencies.defaults([
     LocationPickerConfig config = const LocationPickerConfig(),
   ]) {
-    final dio = Dio();
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 4),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+    );
     return LocationPickerDependencies(
       addressLookup: CachedAddressLookup(
         NominatimAddressLookup(

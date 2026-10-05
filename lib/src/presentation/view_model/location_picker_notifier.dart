@@ -32,6 +32,7 @@ class LocationPickerNotifier extends ValueNotifier<LocationPickerState> {
          LocationPickerState(
            position: initialLatLng,
            currentCenter: initialLatLng ?? fallbackLatLng,
+           shouldMoveToPosition: false,
            addressData: BaseState(
              state:
                  (initialLatLng != null && initialAddress != null)
@@ -157,12 +158,19 @@ class LocationPickerNotifier extends ValueNotifier<LocationPickerState> {
   }
 
   void onCameraMove(LatLng position) {
-    _emit(value.copyWith(currentCenter: position, isMoving: true));
+    _emit(value.copyWith(
+      currentCenter: position,
+      isMoving: true,
+      shouldMoveToPosition: false,
+    ));
   }
 
   void onCameraIdle() {
-    if (value.isMoving && value.currentCenter != null) {
-      _emit(value.copyWith(isMoving: false));
+    if (value.currentCenter != null) {
+      _emit(value.copyWith(
+        isMoving: false,
+        shouldMoveToPosition: false,
+      ));
 
       // If we already have or are loading the address for the target position,
       // and the camera stopped close to it (same cache key), do not trigger another fetch.
@@ -245,9 +253,13 @@ class LocationPickerNotifier extends ValueNotifier<LocationPickerState> {
         value.copyWith(
           position: position,
           currentCenter: position,
+          shouldMoveToPosition: false,
           addressData: BaseState(
-            state: StatusState.failure,
-            exception: LocationPickerFailure(strings.locationFetchFailed),
+            state: StatusState.success,
+            data: (value.addressData.data != null &&
+                    value.addressData.data!.isNotEmpty)
+                ? value.addressData.data
+                : strings.unknownLocation,
           ),
         ),
       );

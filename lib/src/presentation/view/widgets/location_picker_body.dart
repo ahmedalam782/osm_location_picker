@@ -56,9 +56,13 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
     _notifier.addListener(_onPickerStateChanged);
   }
 
+  AnimationController? _moveAnimationController;
+
   @override
   void dispose() {
     _notifier.removeListener(_onPickerStateChanged);
+    _moveAnimationController?.stop();
+    _moveAnimationController?.dispose();
     _mapController.dispose();
     super.dispose();
   }
@@ -74,19 +78,23 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
         previous.shouldMoveToPosition != state.shouldMoveToPosition;
     if (!shouldListen) return;
     if (state.shouldMoveToPosition && state.position != null) {
-          _animatedMapMove(state.position!, widget.config.initialZoom);
+      _animatedMapMove(state.position!, widget.config.initialZoom);
       _notifier.updateShouldMoveToPosition(false);
     }
   }
 
   void _animatedMapMove(LatLng destLocation, double destZoom) {
     try {
+      _moveAnimationController?.stop();
+      _moveAnimationController?.dispose();
+
       final camera = _mapController.camera;
 
       final controller = AnimationController(
         duration: const Duration(milliseconds: 500),
         vsync: this,
       );
+      _moveAnimationController = controller;
 
       final latTween = Tween<double>(
         begin: camera.center.latitude,
@@ -113,7 +121,10 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
       });
 
       controller.forward().then((_) {
-        controller.dispose();
+        if (_moveAnimationController == controller) {
+          controller.dispose();
+          _moveAnimationController = null;
+        }
       });
     } catch (_) {
       // Map is not ready yet.
@@ -172,68 +183,75 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
             // Floating Map Controls (Zoom +, Zoom -, My Location)
             Positioned(
               right: 16,
-              bottom: hasPosition ? 120 : 32,
+              bottom: widget.config.showConfirmButton ? 120 : 32,
               child: MapActionControls(
                 theme: widget.theme,
                 onZoomIn: _zoomIn,
                 onZoomOut: _zoomOut,
                 onMyLocation: () => _notifier.getCurrentLocation(),
-                isLocating: !hasPosition && addressLoading,
+                isLocating: addressLoading && state.position == null,
+                showZoomControls: widget.config.showZoomControls,
+                showMyLocation: widget.config.showMyLocationButton,
               ),
             ),
 
-            // Center Pin Marker (Only active when position is available)
-            if (hasPosition)
-              MapCenterMarker(
+            // Center Pin Marker (Always visible at map center, ignore pointer so map drags freely)
+            IgnorePointer(
+              child: MapCenterMarker(
                 isMoving: state.isMoving,
                 isLoading: false,
                 theme: widget.theme,
               ),
-
-            // Address Header (Always visible)
-            MapAddressHeader(
-              addressText: addressText,
-              theme: widget.theme,
-              strings: widget.strings,
-              placeSearch: widget.placeSearch,
-              near: state.currentCenter ?? state.position,
-              isLoading: addressLoading,
-              onLocationSelected: _notifier.selectLocation,
             ),
 
-            // Confirm Button (Only active when position is available)
-            if (hasPosition)
-              MapConfirmButton(
+            // Address Header (Visible if showAddressHeader is true)
+            if (widget.config.showAddressHeader)
+              MapAddressHeader(
+                addressText: addressText,
                 theme: widget.theme,
-                title: widget.strings.confirmLocation,
-                coordinates: state.currentCenter ?? state.position,
-                isLoading: state.addressData.state == StatusState.loading ||
-                    state.isMoving,
-                onTap: () {
-                  final currentState = _notifier.value;
-                  if (currentState.isMoving) return;
-                  final center = currentState.currentCenter ?? currentState.position;
-                  if (center != null) {
-                    final resolvedAddress =
-                        (currentState.addressData.data != null &&
-                                currentState.addressData.data!
-                                    .trim()
-                                    .isNotEmpty)
-                            ? currentState.addressData.data!
-                            : widget.strings.currentLocation;
-                    final selected = LocationModel(
-                      latLng: center,
-                      address: resolvedAddress,
-                    );
-                    final onConfirmed = widget.onConfirmed;
-                    if (onConfirmed != null) {
-                      onConfirmed(selected);
-                    } else {
-                      Navigator.of(context).pop(selected);
-                    }
-                  }
-                },
+                strings: widget.strings,
+                placeSearch: widget.placeSearch,
+                near: state.currentCenter ?? state.position,
+                isLoading: addressLoading,
+                showSearch: widget.config.showSearch,
+                onLocationSelected: _notifier.selectLocation,
               ),
+
+            // Confirm Button (Visible if showConfirmButton is true)
+            if (widget.config.showConfirmButton)
+              MapConfirmButton(
+              theme: widget.theme,
+              title: widget.strings.confirmLocation,
+              coordinates: state.currentCenter ??
+                  state.position ??
+                  widget.config.fallbackCenter,
+              isLoading: state.addressData.state == StatusState.loading ||
+                  state.isMoving,
+              onTap: () {
+                final currentState = _notifier.value;
+                if (currentState.isMoving) return;
+                final center = currentState.currentCenter ??
+                    currentState.position ??
+                    widget.config.fallbackCenter;
+                final resolvedAddress =
+                    (currentState.addressData.data != null &&
+                            currentState.addressData.data!
+                                .trim()
+                                .isNotEmpty)
+                        ? currentState.addressData.data!
+                        : widget.strings.currentLocation;
+                final selected = LocationModel(
+                  latLng: center,
+                  address: resolvedAddress,
+                );
+                final onConfirmed = widget.onConfirmed;
+                if (onConfirmed != null) {
+                  onConfirmed(selected);
+                } else {
+                  Navigator.of(context).pop(selected);
+                }
+              },
+            ),
 
             // Error overlay (rendered as an overlay on the map, transparent/semi-transparent background)
             if (state.addressData.state == StatusState.failure)
@@ -329,9 +347,16 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
             initialCenter: initialMapCenter,
             initialZoom: widget.config.initialZoom,
             maxZoom: widget.config.maxZoom,
+            interactionOptions: const InteractionOptions(
+              flags: InteractiveFlag.all,
+            ),
             onMapEvent: (event) {
               if (event.source == MapEventSource.mapController) return;
+              if (event is MapEventMoveStart) {
+                _moveAnimationController?.stop();
+              }
               if (event is MapEventMove) {
+                _moveAnimationController?.stop();
                 _notifier.onCameraMove(event.camera.center);
               } else if (event is MapEventMoveEnd) {
                 _notifier.onCameraIdle();
@@ -341,6 +366,7 @@ class _LocationPickerBodyState extends State<LocationPickerBody>
           children: [
             TileLayer(
               urlTemplate: widget.config.tileUrlTemplate,
+              fallbackUrl: widget.config.fallbackUrl,
               userAgentPackageName: widget.config.userAgentPackageName,
               subdomains: widget.config.tileSubdomains,
             ),

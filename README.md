@@ -154,6 +154,10 @@ Add permission descriptions to `ios/Runner/Info.plist`:
 
 No additional code setup is required. The browser will prompt the user automatically for geolocation permissions. Modern browsers require **HTTPS** in production to grant geolocation access.
 
+> [!TIP]
+> **OpenStreetMap Tile Usage on Web / Localhost:**
+> When debugging on Chrome (`localhost`), OpenStreetMap's public servers can rate-limit or block requests (`403 Forbidden` / `ClientException: Failed to fetch`) if using generic package names like `com.example.*`. Always use a unique `userAgentPackageName` (e.g. `'org.my_company.my_app'`) and provide a `fallbackUrl` (such as `'https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png'`) in your `LocationPickerConfig` for guaranteed tile availability.
+
 ---
 
 ## 🚀 Quick Start
@@ -334,7 +338,8 @@ LocationPickerView(
     fallbackCenter: LatLng(30.0444, 31.2357),         // Used if GPS is denied
     searchLimit: 6,                                   // Max search results
     nominatimUserAgent: 'MyCoolApp/1.0',              // Required by Nominatim policy
-    userAgentPackageName: 'com.example.my_cool_app',  // Tile request identifier
+    userAgentPackageName: 'org.my_company.my_app',    // Tile request identifier
+    fallbackUrl: 'https://tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png', // Optional tile fallback
     useDarkTiles: null,                               // null = auto, true = dark, false = light
   ),
 )
@@ -414,7 +419,14 @@ LocationPickerView(
 | `maxZoom` | `double` | `18.0` | Maximum zoom level |
 | `fallbackCenter` | `LatLng` | `(33.3152, 44.3661)` | Default position if GPS is unavailable |
 | `searchLimit` | `int` | `5` | Maximum search results returned |
+| `fallbackUrl` | `String?` | `null` | Optional backup tile server if primary is blocked or slow |
 | `useDarkTiles` | `bool?` | `null` | `true` for dark tiles, `false` for light, `null` for auto |
+| `showSearch` | `bool` | `true` | Show or hide the search bar and search icon |
+| `showAddressHeader` | `bool` | `true` | Show or hide the top address card |
+| `showMyLocationButton` | `bool` | `true` | Show or hide the floating "My Location" GPS button |
+| `showZoomControls` | `bool` | `true` | Show or hide the floating zoom (+ / -) buttons |
+| `showConfirmButton` | `bool` | `true` | Show or hide the bottom confirm location button |
+| `autoFetchCurrentLocation` | `bool` | `true` | Automatically fetch device GPS on startup if coordinates are null |
 
 ---
 
@@ -443,7 +455,7 @@ final LocationModel? result = await Navigator.of(context).push<LocationModel>(
     builder: (context) => LocationPickerView(
       config: const LocationPickerConfig(
         acceptLanguage: 'ar',
-        userAgentPackageName: 'com.example.my_app',
+        userAgentPackageName: 'org.my_company.my_app',
       ),
       strings: const LocationPickerStrings(
         title: 'تحديد موقع التوصيل',

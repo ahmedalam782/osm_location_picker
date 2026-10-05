@@ -39,9 +39,31 @@ class LocationPickerConfig {
   /// Forces dark map tiles. When `null`, follows the app brightness.
   final bool? useDarkTiles;
 
+  /// Optional backup tile URL if [tileUrlTemplate] fails or is blocked.
+  final String? fallbackUrl;
+
+  /// Whether to show the search button and search bar. Defaults to `true`.
+  final bool showSearch;
+
+  /// Whether to show the top address card header. Defaults to `true`.
+  final bool showAddressHeader;
+
+  /// Whether to show the floating "My Location" GPS button. Defaults to `true`.
+  final bool showMyLocationButton;
+
+  /// Whether to show the floating Zoom (+ / -) controls. Defaults to `true`.
+  final bool showZoomControls;
+
+  /// Whether to show the bottom "Confirm Location" button. Defaults to `true`.
+  final bool showConfirmButton;
+
+  /// Whether to automatically fetch device location on startup if initial coordinates are null. Defaults to `true`.
+  final bool autoFetchCurrentLocation;
+
   /// Creates map and geocoding settings.
   const LocationPickerConfig({
     this.tileUrlTemplate = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    this.fallbackUrl,
     this.tileSubdomains = const [],
     this.userAgentPackageName = 'com.location_picker.app',
     this.nominatimUserAgent = 'LocationPicker/1.0',
@@ -51,5 +73,11 @@ class LocationPickerConfig {
     this.fallbackCenter = const LatLng(33.3152, 44.3661),
     this.searchLimit = 5,
     this.useDarkTiles,
+    this.showSearch = true,
+    this.showAddressHeader = true,
+    this.showMyLocationButton = true,
+    this.showZoomControls = true,
+    this.showConfirmButton = true,
+    this.autoFetchCurrentLocation = true,
   });
 }

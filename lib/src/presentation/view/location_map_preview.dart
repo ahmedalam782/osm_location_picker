@@ -90,6 +90,7 @@ class LocationMapPreview extends StatelessWidget {
                   children: [
                     TileLayer(
                       urlTemplate: config.tileUrlTemplate,
+                      fallbackUrl: config.fallbackUrl,
                       userAgentPackageName: config.userAgentPackageName,
                       subdomains: config.tileSubdomains,
                     ),

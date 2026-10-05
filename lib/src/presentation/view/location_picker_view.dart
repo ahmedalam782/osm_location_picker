@@ -125,7 +125,9 @@ class _LocationPickerViewState extends State<LocationPickerView> {
     );
     final address = widget.initialAddress;
     if (widget.initialLatLng == null) {
-      notifier.getCurrentLocation();
+      if (widget.config.autoFetchCurrentLocation) {
+        notifier.getCurrentLocation();
+      }
     } else if (address == null || address.isEmpty) {
       notifier.getAddressFromLatLng(widget.initialLatLng!);
     }
